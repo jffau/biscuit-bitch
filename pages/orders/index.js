@@ -10,6 +10,7 @@ import {
   Spacer,
 } from "@geist-ui/react";
 import WaitTime from "../../components/WaitTime";
+import { useRouter } from "next/router";
 
 const PlaceOrder = () => {
   return (
@@ -36,16 +37,40 @@ const OrderForm = () => {
   ];
   const [order, setOrder] = React.useState([]);
 
-  const handleOrder = React.useCallback(async () => {
-    //TODO:  make request to POST /orders here
-    console.log("place order: ", order);
-  }, [order]);
-
+  const router = useRouter();
   const total = React.useMemo(() => {
     return order.reduce((prev, current) => {
-      return (prev += current.price_per_unit);
+      return (prev += current.price_per_unit * current.quantity);
     }, 0);
   }, [order]);
+
+  const handleOrder = React.useCallback(async () => {
+    const items = order.map((item) => ({
+      name: item.name,
+      quantity: Number(item.quantity),
+    }));
+
+    const body = {
+      total_price: total,
+      items: items,
+    };
+
+    try {
+      const api = "/api/orders";
+
+      const response = await fetch(api, {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const { id } = await response.json();
+      router.push(`/orders/${id}`);
+    } catch (error) {
+      alert("Failed to submit order!");
+      console.log(error);
+    }
+  }, [order, total, router]);
 
   return (
     <>
@@ -77,18 +102,24 @@ const MenuItem = ({ item, order, setOrder }) => {
   const handleCountChange = React.useCallback(
     (e) => {
       setCount(e.target.value);
+      // unchanged items
       const filtered = order.filter((orderItem) => {
         return orderItem.name !== item.name;
       });
-      let addedItems = [];
 
-      for (let i = 0; i < e.target.value; i++) {
-        addedItems.push({
-          name: item.name,
-          price_per_unit: item.price_per_unit,
-        });
+      // clear from order if count is 0
+      if (e.target.value === "0") {
+        setOrder([...filtered]);
+        return;
       }
-      setOrder([...filtered, ...addedItems]);
+
+      let updatedItem = {
+        name: item.name,
+        price_per_unit: item.price_per_unit,
+        quantity: e.target.value,
+      };
+
+      setOrder([...filtered, updatedItem]);
     },
     [order, setOrder, item]
   );
