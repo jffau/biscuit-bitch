@@ -8,17 +8,14 @@ export const handler = (req, res) => {
   switch (req.method) {
     case "GET":
       if (req?.query?.slug) {
-        getOrderById(req, res);
+        return getOrderById(req, res);
       } else {
-        getOrders(req, res);
+        return getOrders(req, res);
       }
-      break;
     case "PATCH":
-      patchOrderById(req, res);
-      break;
+      return patchOrderById(req, res);
     case "POST":
-      postOrders(req, res);
-      break;
+      return postOrders(req, res);
     default:
       res.status(404).json({ message: "Not found." });
   }
