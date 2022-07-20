@@ -9,15 +9,14 @@ import {
   Description,
   Spacer,
 } from "@geist-ui/react";
-import PageHeader from "@geist-ui/react/esm/page/page-header";
 import WaitTime from "../../components/WaitTime";
 
 const PlaceOrder = () => {
   return (
     <Page dotBackdrop={true}>
-      <PageHeader center>
+      <Page.Header center>
         <Text h3>Place an Order</Text>
-      </PageHeader>
+      </Page.Header>
       <WaitTime />
       <Page.Content>
         <OrderForm />
