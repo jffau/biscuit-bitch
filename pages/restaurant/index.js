@@ -100,55 +100,6 @@ const Order = ({ order, pendingOrder }) => {
 export default Restaurant;
 
 export async function getServerSideProps(context) {
-  const mock = {
-    order: [
-      {
-        id: "1",
-        status: "preparing",
-        items: [
-          {
-            name: "burger",
-            quantity: 2,
-          },
-        ],
-        total_price: 19.0,
-        estimated_wait_in_minutes: 10,
-      },
-      {
-        id: "2",
-        status: "ready",
-        items: [
-          {
-            name: "fries",
-            quantity: 1,
-          },
-        ],
-        total_price: 4.0,
-        estimated_wait_in_minutes: 5,
-      },
-      {
-        id: "3",
-        status: "received",
-        items: [
-          {
-            name: "burger",
-            quantity: 1,
-          },
-          {
-            name: "fries",
-            quantity: 1,
-          },
-          {
-            name: "soda",
-            quantity: 1,
-          },
-        ],
-        total_price: 25.0,
-        estimated_wait_in_minutes: 15,
-      },
-    ],
-  };
-
   try {
     let root =
       process.env.NODE_ENV === "development"
