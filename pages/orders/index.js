@@ -8,13 +8,15 @@ import {
   Input,
   Description,
   Spacer,
+  useMediaQuery,
 } from "@geist-ui/react";
 import WaitTime from "../../components/WaitTime";
 import { useRouter } from "next/router";
 
 const PlaceOrder = () => {
+  const isXS = useMediaQuery("xs");
   return (
-    <Page dotBackdrop={true}>
+    <Page width={isXS ? "100%" : undefined} dotBackdrop={true}>
       <Page.Header center>
         <Text h3>Place an Order</Text>
       </Page.Header>
