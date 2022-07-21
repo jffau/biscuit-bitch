@@ -73,7 +73,11 @@ export default TrackOrder;
 
 export async function getServerSideProps(context) {
   const { id } = context.params;
-  const api = `http://localhost:3000/api/orders/${id}`;
+  let root =
+    process.env.NODE_ENV === "development"
+      ? `http://localhost:3000`
+      : `https://biscuit-bitch.vercel.app`;
+  const api = `${root}/api/orders/${id}`;
   const res = await fetch(api);
   const data = await res.json();
 
