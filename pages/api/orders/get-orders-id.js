@@ -18,7 +18,9 @@ export const handler = async (req, res) => {
     res.status(200).json(order);
   } catch (e) {
     console.error("ERROR, failed to get order.", e);
-    res.status(500).json({ message: "Failed to get order." });
+    res.status(500).json({
+      message: "An internal server error occurred, please try again.",
+    });
   }
 };
 
