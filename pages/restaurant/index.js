@@ -16,7 +16,7 @@ const Restaurant = ({ orders }) => {
   const actions = ["received", "preparing", "ready", "pickedup"];
   return (
     <Page>
-      <Grid.Container gap={2} justify="center" height="100px">
+      <Grid.Container gap={4} justify="center">
         {orders.order.map((order) => {
           return <Order order={order} key={order.id} />;
         })}
@@ -50,7 +50,6 @@ const Order = ({ order }) => {
       case "pickedup":
         return "Done";
         break;
-
       default:
         return "unknown";
     }
@@ -58,7 +57,7 @@ const Order = ({ order }) => {
   const [status, setStatus] = React.useState(order.status);
 
   return (
-    <Grid key={order.id} xs={6}>
+    <Grid key={order.id} xs={24} md={8} xl={4}>
       <Card shadow width="100%">
         <Description title="Order ID" content={`${order.id}`} />
         <Text>Status: {status}</Text>
