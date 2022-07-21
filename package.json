@@ -9,6 +9,7 @@
   "dependencies": {
     "@geist-ui/react": "^2.2.5",
     "ably": "^1.2.27",
+    "aws-sdk": "^2.1179.0",
     "next": "^12.1.4",
     "react": "18.0.0",
     "react-dom": "18.0.0",
