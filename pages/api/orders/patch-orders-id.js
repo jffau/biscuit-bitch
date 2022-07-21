@@ -1,6 +1,8 @@
 import { client } from "../../../utils/ably";
 import { ORDER, ORDERS_CHANNEL } from "../../../constants/ably";
 import { getOrderById } from "../../../utils/order";
+import { db } from "../../../utils/dynamodb";
+import { ORDERS_TABLE } from "../../../constants/dynamo";
 
 export const handler = async (req, res) => {
   try {
@@ -14,14 +16,22 @@ export const handler = async (req, res) => {
 
     if (!order) {
       console.log("Order not found.");
-      res.status(404).json({ message: "Cannot update an order that does not exist" });
+      res
+        .status(404)
+        .json({ message: "Cannot update an order that does not exist" });
     }
 
     const updatedStatus = req.body.status;
     const updatedOrder = {
       ...order,
-      status: updatedStatus
+      status: updatedStatus,
     };
+
+    // TODO: if latency is a problem uncomment
+    // await db.put({ TableName: ORDERS_TABLE, Item: updatedOrder }).promise();
+
+    // For whatever reason deleting the key fixes the Dynamo db connector sink
+    delete updatedOrder.key;
 
     console.log("Submitting updated order", updatedOrder);
 
@@ -37,7 +47,6 @@ export const handler = async (req, res) => {
         res.status(200).json(updatedOrder);
       }
     });
-    
   } catch (e) {
     console.error("ERROR, failed to get order.", e);
     res.status(500).json({ message: "Failed to update order." });
