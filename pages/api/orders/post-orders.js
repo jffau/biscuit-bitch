@@ -20,7 +20,7 @@ export const handler = (req, res) => {
     const order = {
       ...req.body,
       id: getOrderId(),
-      status: PREPARING_STATUS,
+      status: "received",
       estimated_wait_in_minutes: getOrderWaitTime(req.body.items.length),
     };
 

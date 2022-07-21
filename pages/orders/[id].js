@@ -30,7 +30,9 @@ const TrackOrder = ({ initialOrder }) => {
   const [order, setOrder] = React.useState(initialOrder ?? null);
 
   const [channel, ably] = useChannel("orders", (message) => {
-    // TODO: listen for update, update status
+    if (message.data.id === id) {
+      setOrder(message.data);
+    }
   });
 
   const history = channel.history((err, result) => {
@@ -38,6 +40,7 @@ const TrackOrder = ({ initialOrder }) => {
     const { data } = result.items.find((item) => item.data.id === id);
     if (!order) {
       console.log("setting order from history");
+
       setOrder(data);
     }
   });
@@ -48,7 +51,7 @@ const TrackOrder = ({ initialOrder }) => {
     switch (status) {
       case "unknown":
         return null;
-      case "recieved":
+      case "received":
         return (
           <Text>
             {`Your order is recieved. We will let you know when it is being made.`}
@@ -61,7 +64,7 @@ const TrackOrder = ({ initialOrder }) => {
           <Text>{`Your order is ready! Please proceed to the pick up area. 
 You can provide order ID or qr code for confirmation.`}</Text>
         );
-      case "completed":
+      case "complete":
         return <Text>{`Thanks for picking up your order! Enjoy!`}</Text>;
       default:
         return null;

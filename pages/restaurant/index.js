@@ -28,9 +28,9 @@ const Restaurant = ({ orders, pendingOrders }) => {
 };
 
 const Order = ({ order, pendingOrder }) => {
-  const actions = ["received", "preparing", "ready", "pickedup"];
+  const actions = ["received", "preparing", "ready", "complete"];
 
-  const handleStatusChange = () => {
+  const handleStatusChange = async (id) => {
     const current = actions.indexOf(status);
     const next = current + 1;
     if (next >= actions.length) {
@@ -38,7 +38,18 @@ const Order = ({ order, pendingOrder }) => {
     }
     setStatus(actions[next]);
 
-    // TODO: make api call
+    let root =
+      process.env.NODE_ENV === "development"
+        ? `http://localhost:3000`
+        : `https://biscuit-bitch.vercel.app`;
+
+    const api = `${root}/api/orders/${id}`;
+    const res = await fetch(api, {
+      method: "PATCH",
+      body: JSON.stringify({ status: actions[next] }),
+      headers: { "Content-Type": "application/json" },
+    });
+    console.log(res);
   };
 
   const getNextAction = () => {
@@ -49,7 +60,7 @@ const Order = ({ order, pendingOrder }) => {
         return "Ready";
       case "ready":
         return "Complete";
-      case "pickedup":
+      case "complete":
         return "Done";
         break;
       default:
@@ -87,7 +98,7 @@ const Order = ({ order, pendingOrder }) => {
           </Grid>
 
           <Grid xs={24} justify="center" style={{ alignSelf: "end" }}>
-            <Button onClick={handleStatusChange} width="100px">
+            <Button onClick={() => handleStatusChange(order.id)} width="100px">
               {getNextAction()}
             </Button>
           </Grid>
