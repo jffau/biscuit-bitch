@@ -8,14 +8,14 @@ import {
   Spacer,
   Text,
   Description,
+  useMediaQuery,
 } from "@geist-ui/react";
 
 const Restaurant = ({ orders }) => {
-  console.log("orders", orders);
-
   const actions = ["received", "preparing", "ready", "pickedup"];
+  const isXS = useMediaQuery("xs");
   return (
-    <Page>
+    <Page width={isXS ? "100%" : undefined} dotBackdrop={true}>
       <Grid.Container gap={4} justify="center">
         {orders.order.map((order) => {
           return <Order order={order} key={order.id} />;
