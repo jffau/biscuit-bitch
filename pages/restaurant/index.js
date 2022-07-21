@@ -12,14 +12,46 @@ import {
 } from "@geist-ui/react";
 import { QRCodeSVG } from "qrcode.react";
 
-const Restaurant = ({ orders, pendingOrders }) => {
+import { configureAbly, useChannel } from "@ably-labs/react-hooks";
+
+configureAbly({
+  key: "yeD4yg.SGmWww:B47Df0TYlM7s5LDoZ6NRQHXrqC1XfNhr-J6w3NibPwI",
+  clientId: "client-id",
+});
+
+const Restaurant = ({ pendingOrders }) => {
+  const [orders, setOrders] = React.useState(
+    pendingOrders.reduce(
+      (acc, curr) => ({ ...acc, [Number(curr.id)]: curr }),
+      {}
+    )
+  );
+
+  const [channel, ably] = useChannel("orders", (message) => {
+    console.log(message);
+    // setOrders((prev) => ({ ...prev, [Number(message.data.id)]: message.data }));
+  });
+
+  React.useEffect(() => {
+    const history = channel.history((err, result) => {
+      const newOrders = result.items.reduce(
+        (acc, curr) => ({ ...acc, [Number(curr.data.id)]: curr }),
+        {}
+      );
+
+      console.log("newOrders", newOrders);
+      setOrders((prev) => ({ ...prev, ...newOrders }));
+    });
+  }, [channel]);
+
+  console.log(orders);
   const actions = ["received", "preparing", "ready", "pickedup"];
   const isXS = useMediaQuery("xs");
-  console.log("pendingOrders", pendingOrders);
+
   return (
     <Page width={isXS ? "100%" : undefined} dotBackdrop={true}>
       <Grid.Container gap={4} justify="center">
-        {pendingOrders?.map((order) => {
+        {Object.values(orders)?.map((order) => {
           return <Order order={order} key={order.id} />;
         })}
       </Grid.Container>

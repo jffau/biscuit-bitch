@@ -28,7 +28,10 @@ export const handler = (req, res) => {
 
     channel.publish(ORDER, order, (error) => {
       if (error) {
-        console.error("ERROR, failed to publish message to orders channel.", e);
+        console.error(
+          "ERROR, failed to publish message to orders channel.",
+          error
+        );
         res.status(500).json({
           message: "An internal server error occurred, please try again.",
         });
