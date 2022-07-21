@@ -8,7 +8,7 @@ export const handler = (req, res) => {
         items: [
           {
             name: "burger",
-            quantity: 2,
+            quantity: 3,
           },
         ],
         total_price: 19.0,
