@@ -35,7 +35,7 @@ const Restaurant = ({ pendingOrders }) => {
   React.useEffect(() => {
     const history = channel.history((err, result) => {
       const newOrders = result.items.reduce(
-        (acc, curr) => ({ ...acc, [Number(curr.data.id)]: curr }),
+        (acc, curr) => ({ ...acc, [Number(curr.data.id)]: curr.data }),
         {}
       );
 
